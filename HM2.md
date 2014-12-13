@@ -1,3 +1,9 @@
+<style type="text/css">
+.small-code pre code {
+font-size: 1.1em;
+}
+</style>
+
 QDT: hierarchical models 2
 ========================================================
 author: Max Joseph
@@ -58,6 +64,7 @@ Choose between two models
 ![plot of chunk unnamed-chunk-3](HM2-figure/unnamed-chunk-3-1.png) 
 
 ==========================================================
+class: small-code
 
 ### ANOVA  perspective
 
@@ -71,9 +78,9 @@ Analysis of Variance Table
 
 Model 1: Y ~ 1
 Model 2: Y ~ 1 + factor(id)
-  Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
-1    139 742.45                                  
-2    125 542.21 14    200.24 3.2973 0.0001713 ***
+  Res.Df    RSS Df Sum of Sq      F   Pr(>F)   
+1    139 754.19                                
+2    125 593.18 14    161.02 2.4236 0.004845 **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
@@ -145,7 +152,7 @@ Synonyms
 
 =========================================================
 
-Demo: shrinkage.R, nba_freethrows.R
+Demo: [shrinkage.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/shrinkage.R), [nba_freethrows.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/nba_freethrows.R)
 
 ![](http://www.sikids.com/sites/default/files/multimedia/photo_gallery/0912/rare.larry.bird.photos/images/larry-bird-indiana-state.jpg)
 
@@ -202,9 +209,9 @@ $= \int_\theta p(\tilde y | \theta) p(\theta | Y) d \theta$
 
 $p(\tilde y | y)$
 
-$= \int_\theta p(\tilde y, \theta | y)$
+$= \int_\theta p(\tilde y, \theta | y) d \theta$
 
-$= \int_\theta p(\tilde y | \theta) p(\theta | Y)$
+$= \int_\theta p(\tilde y | \theta) p(\theta | Y) d \theta$
 
 Discretized, summing over posterior simulations:
 
@@ -241,4 +248,4 @@ $p(\tilde y | y) = \frac{1}{S} \sum_{s=1}^S p(\tilde y | \alpha_j^s, \sigma_y^s)
 
 ========================================================
 
-Demo: prediction.R
+Demo: [prediction.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/prediction.R)
