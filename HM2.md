@@ -21,7 +21,7 @@ transition-speed: fast
 Account for nesting?
 - can also be done with fixed effects*
 
-*hierarchical models very useful here, but strictly speaking this is not the only reason to use them
+*hierarchical models very useful here, but far from the only reason to use them
 
 
 ========================================================
@@ -78,9 +78,9 @@ Analysis of Variance Table
 
 Model 1: Y ~ 1
 Model 2: Y ~ 1 + factor(id)
-  Res.Df    RSS Df Sum of Sq      F   Pr(>F)   
-1    139 754.19                                
-2    125 593.18 14    161.02 2.4236 0.004845 **
+  Res.Df    RSS Df Sum of Sq      F  Pr(>F)  
+1    139 604.67                              
+2    125 502.88 14    101.79 1.8072 0.04434 *
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```

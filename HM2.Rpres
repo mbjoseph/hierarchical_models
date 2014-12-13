@@ -21,7 +21,7 @@ transition-speed: fast
 Account for nesting?
 - can also be done with fixed effects*
 
-*hierarchical models very useful here, but strictly speaking this is not the only reason to use them
+*hierarchical models very useful here, but far from the only reason to use them
 
 
 ========================================================
