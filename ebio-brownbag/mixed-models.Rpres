@@ -1,0 +1,284 @@
+<style type="text/css">
+.small-code pre code {
+font-size: 1.1em;
+}
+</style>
+
+Mixed models
+========================================================
+author: Max Joseph
+date: Jan 14, 2014
+font-import: http://fonts.googleapis.com/css?family=Arvo
+font-family: 'Arvo', serif
+transition: fade
+transition-speed: fast
+
+========================================================
+
+### Increasing use
+
+```{r echo=FALSE, fig.height=4}
+setwd("~/Documents/presentations/hierarchical_models")
+d <- read.csv("ebio-brownbag/analyze.csv")
+d <- subset(d, year != 2015)
+plot(d$year, d$records, 
+     xlab="Year", 
+     ylab="Number of results", 
+     main="ISI WoS topic frequency of mixed model* ecolog*")
+```
+
+========================================================
+
+### ANOVA
+
+How to estimate a group mean $\alpha_j$ with data $y_{ij}$ from $J$ groups?
+
+```{r echo=FALSE, fig.height=4}
+library(scales)
+library(lme4)
+K <- 20 # number of groups
+mu_alpha <- 0 # population mean
+sigma_alpha <- 1 # among group sd
+sigma_Y <- 2 # residual sd
+e_nmin <- .001 # exp(minimum group sample size)
+e_nmax <- 3.5 # exp(maximum group sample size)
+n_j <- floor(exp(seq(e_nmin, e_nmax, length.out=K))) 
+id <- rep(1:K, times=n_j)
+N <- length(id)
+
+# simulate vals
+alpha_j <- rnorm(K, mu_alpha, sigma_alpha)
+Y <- rnorm(N, alpha_j[id], sigma_Y)
+
+
+plot(Y~id, ylab="observation", xlab="group", 
+     xaxp  = c(0, K + 1, K + 1))
+```
+
+
+===========================================================
+
+### ANOVA perspective
+
+Choose between two models
+
+1. Grand mean/total pooling: $\bar Y_{..}$ 
+
+$$ \mu_1 = \mu_2 = ... = \mu_K $$
+
+```{r echo=FALSE, fig.height=4}
+plot(Y~id, ylab="observation", xlab="group")
+## Complete pooling / grand mean model
+mod1 <- lm(Y ~ 1)
+abline(mod1, col=alpha("red", .6), 
+       lty=3, lwd=3)
+```
+
+
+===========================================================
+
+### ANOVA perspective
+
+Choose between two models
+
+1. Grand mean: $\bar Y_{..}$
+
+2. Indep. means/no pooling: $\bar Y_{j.}$
+
+```{r echo=FALSE, fig.height=4}
+## No pooling / independent means
+mod2 <- lm(Y ~ 1 + factor(id))
+alpha_est1 <- coef(mod2)
+alpha_est1[-1] <- alpha_est1[1] + alpha_est1[-1]
+
+plot(Y~id, ylab="observation", xlab="group")
+points(x=1:K, alpha_est1, col=alpha("green", .5), 
+       pch=19, cex=2)
+```
+
+==========================================================
+class: small-code
+
+### ANOVA  perspective
+
+```{r echo=TRUE}
+anova(mod1, mod2)
+```
+
+==========================================================
+
+### Motivating shrinkage
+
+What's the deal with small sample sizes $n_j$?
+
+```{r, plot=TRUE, fig.height=4, echo=FALSE}
+plot(n_j, alpha_est1, 
+     xlab="Within-group sample size", 
+     ylab="Estimated group mean")
+```
+
+
+==========================================================
+
+### Motivating shrinkage
+
+Do we really believe that groups with small $n_j$ are more variable?
+
+```{r, plot=TRUE, fig.height=4, echo=FALSE}
+plot(n_j, alpha_est1, 
+     xlab="Within-group sample size", 
+     ylab="Estimated group mean")
+```
+
+
+
+==========================================================
+
+### Motivating shrinkage
+
+Or, alternatively, are we overfitting the data for small groups?
+
+- high parameter to data ratio for small $n_j$
+
+```{r echo=FALSE, fig.height=4}
+## No pooling / independent means
+mod2 <- lm(Y ~ 1 + factor(id))
+alpha_est1 <- coef(mod2)
+alpha_est1[-1] <- alpha_est1[1] + alpha_est1[-1]
+
+plot(Y~id, ylab="observation", xlab="group")
+points(x=1:K, alpha_est1, col=alpha("green", .5), 
+       pch=19, cex=2)
+```
+
+
+==========================================================
+
+### Motivating shrinkage
+
+Is there a better estimate for a group mean, other than the sample mean for the group?
+
+YES! When we have > 2 groups (see [Stein's paradox](http://statweb.stanford.edu/~ckirby/brad/other/Article1977.pdf))
+
+```{r echo=FALSE, fig.height=4}
+## No pooling / independent means
+mod2 <- lm(Y ~ 1 + factor(id))
+alpha_est1 <- coef(mod2)
+alpha_est1[-1] <- alpha_est1[1] + alpha_est1[-1]
+
+plot(Y~id, ylab="observation", xlab="group")
+points(x=1:K, alpha_est1, col=alpha("green", .5), 
+       pch=19, cex=2)
+```
+
+
+==========================================================
+
+### Borrowing information
+
+Mixture of sample and grand mean:
+
+$$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
+
+
+==========================================================
+
+### Borrowing information
+
+Mixture of sample and grand mean:
+
+$$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
+
+Compromise between no pooling ($H_A, \lambda = 1$) and total pooling ($H_0 \lambda=0$)
+
+===================================================
+
+### Hierarchical models
+
+Random effects impose shrinkage!
+
+$$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
+
+$$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
+
+![](http://pngimg.com/upload/star_PNG1597.png)
+
+===================================================
+
+### Hierarchical models
+
+$$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
+
+$$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
+
+Amt shrinkage:
+- information in group j (e.g. $n_j$)
+- variance attributable to groups
+
+$$\dfrac{\sigma_\alpha}{\sigma_\alpha + \sigma_y}$$
+
+=========================================================
+
+### Connection to ANOVA
+
+$$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
+
+$$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
+
+$$0 < \sigma_\alpha < \infty$$
+
+Compromise between 
+- Total pooling: $\sigma_\alpha = 0$
+
+- No pooling: $\sigma_\alpha = \infty$
+
+Synonyms
+================================================
+
+- "partial pooling" 
+- "semi-pooling"
+- "hierarchical pooling"
+- "shrinkage"
+- "borrowing information"
+- "borrowing strength (of information)"
+
+=========================================================
+
+Demo: [shrinkage.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/shrinkage.R)
+
+========================================================
+
+### Recap
+
+Random effects impose structure on parameters
+
+$$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
+
+$$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
+
+
+========================================================
+
+### Mixed effects
+
+Combination of fixed *and* random effects
+
+e.g. let's say I'm studying Alot blood parasites
+
+![](http://4.bp.blogspot.com/_D_Z-D2tzi14/S8TRIo4br3I/AAAAAAAACv4/Zh7_GcMlRKo/s1600/ALOT.png)
+
+* image & concept from [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
+
+====================================================================
+
+###  Questions & sampling scenario
+
+Let's say I want to know in general whether large-bodied Alots have higher blood parasite levels .
+
+Random sample of $n_j$ individuals at each of $J$ sites.
+
+I expect among-site variation and among-size variation. 
+
+====================================================================
+
+### Alot example

@@ -78,7 +78,8 @@ legend("topleft",
 
 
 ## Partial pooling/hierarchical model
-mod3 <- lmer(Y ~ 1 + (1|factor(id)))
+fid <- factor(id)
+mod3 <- lmer(Y ~ 1 + (1|fid))
 
 plot(Y~id, ylab="observation", xlab="group")
 points(alpha_j, col=alpha("blue", .5), cex=2, pch=19)
@@ -222,8 +223,9 @@ for (i in 1:length(sigma_a_vec)){
   # simulate vals
   alpha_j <- rnorm(K, mu_alpha, sigma_alpha)
   Y <- rnorm(N, alpha_j[id], sigma_Y)
-  mod3S <- lmer(Y ~ 1 + (1|factor(id)))
-  mod2S <- lm(Y ~ 1 + factor(id))
+  fid <- factor(id)
+  mod3S <- lmer(Y ~ 1 + (1|fid))
+  mod2S <- lm(Y ~ 1 + fid)
   alpha_est1S <- coef(mod2S)
   alpha_est1S[-1] <- alpha_est1S[1] + alpha_est1S[-1]
   alpha_est2S <- unlist(ranef(mod3S)) + fixef(mod3S)
