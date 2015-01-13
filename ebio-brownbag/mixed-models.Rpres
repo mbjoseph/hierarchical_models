@@ -8,14 +8,25 @@ Mixed models
 ========================================================
 author: Max Joseph
 date: Jan 14, 2014
-font-import: http://fonts.googleapis.com/css?family=Arvo
-font-family: 'Arvo', serif
+font-family: 'Helvetica', serif
 transition: fade
 transition-speed: fast
 
 ========================================================
 
-### Increasing use
+### Overview
+
+1. Why bother?
+
+2. Random intercept models
+
+3. Random slope and intercept models
+
+4. Other resources
+
+========================================================
+
+### Why bother?
 
 ```{r echo=FALSE, fig.height=4}
 setwd("~/Documents/presentations/hierarchical_models")
@@ -29,9 +40,27 @@ plot(d$year, d$records,
 
 ========================================================
 
-### ANOVA
+### Why bother? 
 
-How to estimate a group mean $\alpha_j$ with data $y_{ij}$ from $J$ groups?
+- increasing use
+- broader scope of inference
+
+
+
+========================================================
+
+### Why bother? 
+
+- increasing use
+- broader scope of inference
+- *improved estimates*
+
+========================================================
+
+Estimate group means $\alpha_j$ with data $y_{ij}$ from $J$ groups
+
+Tragically unequal sample sizes
+
 
 ```{r echo=FALSE, fig.height=4}
 library(scales)
@@ -40,7 +69,7 @@ K <- 20 # number of groups
 mu_alpha <- 0 # population mean
 sigma_alpha <- 1 # among group sd
 sigma_Y <- 2 # residual sd
-e_nmin <- .001 # exp(minimum group sample size)
+e_nmin <- .1 # exp(minimum group sample size)
 e_nmax <- 3.5 # exp(maximum group sample size)
 n_j <- floor(exp(seq(e_nmin, e_nmax, length.out=K))) 
 id <- rep(1:K, times=n_j)
@@ -58,7 +87,7 @@ plot(Y~id, ylab="observation", xlab="group",
 
 ===========================================================
 
-### ANOVA perspective
+### Optimist's ANOVA perspective
 
 Choose between two models
 
@@ -77,7 +106,7 @@ abline(mod1, col=alpha("red", .6),
 
 ===========================================================
 
-### ANOVA perspective
+### Optimist's ANOVA perspective
 
 Choose between two models
 
@@ -99,15 +128,13 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
 ==========================================================
 class: small-code
 
-### ANOVA  perspective
+### Overly optimistic analysis
 
 ```{r echo=TRUE}
 anova(mod1, mod2)
 ```
 
 ==========================================================
-
-### Motivating shrinkage
 
 What's the deal with small sample sizes $n_j$?
 
@@ -120,25 +147,9 @@ plot(n_j, alpha_est1,
 
 ==========================================================
 
-### Motivating shrinkage
+### Overfitting much?
 
-Do we really believe that groups with small $n_j$ are more variable?
-
-```{r, plot=TRUE, fig.height=4, echo=FALSE}
-plot(n_j, alpha_est1, 
-     xlab="Within-group sample size", 
-     ylab="Estimated group mean")
-```
-
-
-
-==========================================================
-
-### Motivating shrinkage
-
-Or, alternatively, are we overfitting the data for small groups?
-
-- high parameter to data ratio for small $n_j$
+High parameter to data ratio for small $n_j$
 
 ```{r echo=FALSE, fig.height=4}
 ## No pooling / independent means
@@ -154,11 +165,9 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
 
 ==========================================================
 
-### Motivating shrinkage
+Is there an option better than $\bar y_{j.}$?
 
-Is there a better estimate for a group mean, other than the sample mean for the group?
-
-YES! When we have > 2 groups (see [Stein's paradox](http://statweb.stanford.edu/~ckirby/brad/other/Article1977.pdf))
+Oddly, yes! When we have > 2 groups (see [Stein's paradox](http://statweb.stanford.edu/~ckirby/brad/other/Article1977.pdf))
 
 ```{r echo=FALSE, fig.height=4}
 ## No pooling / independent means
@@ -174,22 +183,59 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
 
 ==========================================================
 
-### Borrowing information
+### Conceptualizing a better estimate
+
+Which of these estimates do we trust least?
+
+What information can we use to improve the estimate?
+
+```{r echo=FALSE, fig.height=4}
+## No pooling / independent means
+mod2 <- lm(Y ~ 1 + factor(id))
+alpha_est1 <- coef(mod2)
+alpha_est1[-1] <- alpha_est1[1] + alpha_est1[-1]
+
+plot(Y~id, ylab="observation", xlab="group")
+points(x=1:K, alpha_est1, col=alpha("green", .5), 
+       pch=19, cex=2)
+```
+
+==========================================================
+
+### A better estimate
 
 Mixture of sample and grand mean:
 
 $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
+$$ 0 < \lambda < 1$$
 
 ==========================================================
 
-### Borrowing information
+### A better estimate
+
+Mixture of sample and grand mean:
+
+$$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
+
+$$ 0 < \lambda < 1$$
+
+Compromise b/t: 
+
+no pooling ($H_A, \lambda = 1$) & total pooling ($H_0, \lambda=0$)
+
+
+========================================================
+
+### A better estimate
 
 Mixture of sample and grand mean:
 
 $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
 Compromise between no pooling ($H_A, \lambda = 1$) and total pooling ($H_0 \lambda=0$)
+
+$\lambda$ controls degree of shrinkage
 
 ===================================================
 
@@ -265,20 +311,20 @@ Combination of fixed *and* random effects
 
 e.g. let's say I'm studying Alot blood parasites
 
-![](http://4.bp.blogspot.com/_D_Z-D2tzi14/S8TRIo4br3I/AAAAAAAACv4/Zh7_GcMlRKo/s1600/ALOT.png)
+![](ALOT.png)
 
-* image & concept from [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
+* courtesy of [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
 
 ====================================================================
 
 ###  Questions & sampling scenario
 
-Let's say I want to know in general whether large-bodied Alots have higher blood parasite levels .
+Do large-bodied Alots have more blood parasites?
 
 Random sample of $n_j$ individuals at each of $J$ sites.
 
-I expect among-site variation and among-size variation. 
+![](alot_of_alots.png)
 
 ====================================================================
 
-### Alot example
+(Alot example)[]

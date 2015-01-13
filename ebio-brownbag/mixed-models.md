@@ -8,29 +8,58 @@ Mixed models
 ========================================================
 author: Max Joseph
 date: Jan 14, 2014
-font-import: http://fonts.googleapis.com/css?family=Arvo
-font-family: 'Arvo', serif
+font-family: 'Helvetica', serif
 transition: fade
 transition-speed: fast
 
 ========================================================
 
-### Increasing use
+### Overview
+
+1. Why bother?
+
+2. Random intercept models
+
+3. Random slope and intercept models
+
+4. Other resources
+
+========================================================
+
+### Why bother?
 
 ![plot of chunk unnamed-chunk-1](mixed-models-figure/unnamed-chunk-1-1.png) 
 
 ========================================================
 
-### ANOVA
+### Why bother? 
 
-How to estimate a group mean $\alpha_j$ with data $y_{ij}$ from $J$ groups?
+- increasing use
+- broader scope of inference
+
+
+
+========================================================
+
+### Why bother? 
+
+- increasing use
+- broader scope of inference
+- *improved estimates*
+
+========================================================
+
+Estimate group means $\alpha_j$ with data $y_{ij}$ from $J$ groups
+
+Tragically unequal sample sizes
+
 
 ![plot of chunk unnamed-chunk-2](mixed-models-figure/unnamed-chunk-2-1.png) 
 
 
 ===========================================================
 
-### ANOVA perspective
+### Optimist's ANOVA perspective
 
 Choose between two models
 
@@ -43,7 +72,7 @@ $$ \mu_1 = \mu_2 = ... = \mu_K $$
 
 ===========================================================
 
-### ANOVA perspective
+### Optimist's ANOVA perspective
 
 Choose between two models
 
@@ -56,7 +85,7 @@ Choose between two models
 ==========================================================
 class: small-code
 
-### ANOVA  perspective
+### Overly optimistic analysis
 
 
 ```r
@@ -69,15 +98,13 @@ Analysis of Variance Table
 Model 1: Y ~ 1
 Model 2: Y ~ 1 + factor(id)
   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
-1    183 838.05                                  
-2    164 582.67 19    255.38 3.7831 1.507e-06 ***
+1    186 808.96                                  
+2    167 562.72 19    246.24 3.8462 1.038e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
 ==========================================================
-
-### Motivating shrinkage
 
 What's the deal with small sample sizes $n_j$?
 
@@ -86,54 +113,68 @@ What's the deal with small sample sizes $n_j$?
 
 ==========================================================
 
-### Motivating shrinkage
+### Overfitting much?
 
-Do we really believe that groups with small $n_j$ are more variable?
+High parameter to data ratio for small $n_j$
 
 ![plot of chunk unnamed-chunk-7](mixed-models-figure/unnamed-chunk-7-1.png) 
 
 
-
 ==========================================================
 
-### Motivating shrinkage
+Is there an option better than $\bar y_{j.}$?
 
-Or, alternatively, are we overfitting the data for small groups?
-
-- high parameter to data ratio for small $n_j$
+Oddly, yes! When we have > 2 groups (see [Stein's paradox](http://statweb.stanford.edu/~ckirby/brad/other/Article1977.pdf))
 
 ![plot of chunk unnamed-chunk-8](mixed-models-figure/unnamed-chunk-8-1.png) 
 
 
 ==========================================================
 
-### Motivating shrinkage
+### Conceptualizing a better estimate
 
-Is there a better estimate for a group mean, other than the sample mean for the group?
+Which of these estimates do we trust least?
 
-YES! When we have > 2 groups (see [Stein's paradox](http://statweb.stanford.edu/~ckirby/brad/other/Article1977.pdf))
+What information can we use to improve the estimate?
 
 ![plot of chunk unnamed-chunk-9](mixed-models-figure/unnamed-chunk-9-1.png) 
 
-
 ==========================================================
 
-### Borrowing information
+### A better estimate
 
 Mixture of sample and grand mean:
 
 $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
+$$ 0 < \lambda < 1$$
 
 ==========================================================
 
-### Borrowing information
+### A better estimate
+
+Mixture of sample and grand mean:
+
+$$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
+
+$$ 0 < \lambda < 1$$
+
+Compromise b/t: 
+
+no pooling ($H_A, \lambda = 1$) & total pooling ($H_0, \lambda=0$)
+
+
+========================================================
+
+### A better estimate
 
 Mixture of sample and grand mean:
 
 $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
 Compromise between no pooling ($H_A, \lambda = 1$) and total pooling ($H_0 \lambda=0$)
+
+$\lambda$ controls degree of shrinkage
 
 ===================================================
 
@@ -209,20 +250,20 @@ Combination of fixed *and* random effects
 
 e.g. let's say I'm studying Alot blood parasites
 
-![](http://4.bp.blogspot.com/_D_Z-D2tzi14/S8TRIo4br3I/AAAAAAAACv4/Zh7_GcMlRKo/s1600/ALOT.png)
+![](ALOT.png)
 
-* image & concept from [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
+* courtesy of [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
 
 ====================================================================
 
 ###  Questions & sampling scenario
 
-Let's say I want to know in general whether large-bodied Alots have higher blood parasite levels .
+Do large-bodied Alots have more blood parasites?
 
 Random sample of $n_j$ individuals at each of $J$ sites.
 
-I expect among-site variation and among-size variation. 
+![](alot_of_alots.png)
 
 ====================================================================
 
-### Alot example
+(Alot example)[]
