@@ -1,6 +1,6 @@
 ### Simulating Alot blood parasite dataset
 J <- 25 # number of sites
-n_j <- round(runif(J, 3, 30))
+n_j <- round(runif(J, 3, 20))
 individual <- NULL
 site <- NULL
 size <- NULL
