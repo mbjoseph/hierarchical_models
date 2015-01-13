@@ -1,6 +1,6 @@
 ### Simulating Alot blood parasite dataset
-J <- 20 # number of sites
-n_j <- round(runif(J, 3, 50))
+J <- 25 # number of sites
+n_j <- round(runif(J, 3, 30))
 individual <- NULL
 site <- NULL
 size <- NULL
@@ -15,12 +15,13 @@ d <- data.frame(individual=individual,
 
 # set up model parameters & simulate response
 grand_mean <- 2
-sigma_beta <- 2
-mu_beta <- 2
+sigma_beta <- 3
+mu_beta <- 3
 beta_size <- rnorm(J, mean=mu_beta, sd=sigma_beta)
-sigma_site <- 2
+sigma_site <- 3
 sigma_y <- 3
 site_eff <- rnorm(J, mean=0, sd=sigma_site)
 mu <- grand_mean + beta_size[site] * size + site_eff[site]
 err <- rnorm(nrow(d), mean=0, sd=sigma_y)
 d$log_parasites <- mu + err
+
