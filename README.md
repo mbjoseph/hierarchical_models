@@ -5,7 +5,7 @@ Slideshow, papers, and example R scripts to demonstrate shrinkage/partial poolin
 
 ### Slideshows
 - [QDT](https://github.com/mbjoseph/hierarchical_models/blob/master/qdt/HM2.Rpres) 
-- [EBIO brown bag](https://github.com/mbjoseph/hierarchical_models/blob/master/ebio-brownbag/mixed-models.Rpres)
+- [EBIO brown bag](https://github.com/mbjoseph/hierarchical_models/blob/master/ebio-brownbag/bb_beamer.pdf?raw=true)
 
 ### R examples
 - [Random intercept model in lme4: illustration of shrinkage/partial pooling](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/shrinkage.R)
