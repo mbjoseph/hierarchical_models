@@ -90,7 +90,7 @@ $$ \mu_1 = \mu_2 = ... = \mu_K $$
 
 ===========================================================
 
-### Overly Optimistic ANOVA
+### Overly optimistic ANOVA
 
 Choose between two models
 
@@ -115,9 +115,9 @@ Analysis of Variance Table
 
 Model 1: Y ~ 1
 Model 2: Y ~ 1 + factor(id)
-  Res.Df    RSS Df Sum of Sq      F  Pr(>F)  
-1    186 989.73                              
-2    167 835.36 19    154.37 1.6242 0.05541 .
+  Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+1    186 999.25                                  
+2    167 731.58 19    267.67 3.2158 2.653e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```

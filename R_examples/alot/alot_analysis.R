@@ -77,6 +77,7 @@ ggplot(d, aes(y=log_parasites, x=body_size)) +
 # let's allow the slopes AND intercpets to vary for each site
 m2 <- lmer(log_parasites ~ body_size + (1 + body_size|site), 
            data=d)
+m2
 
 # How did that do?
 intercepts2 <- fixef(m2)[1] + unlist(ranef(m2)$site["(Intercept)"])

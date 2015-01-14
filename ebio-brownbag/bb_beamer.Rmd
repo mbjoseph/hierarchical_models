@@ -1,23 +1,11 @@
-<style type="text/css">
-.small-code pre code {
-font-size: 1.1em;
-}
-</style>
+---
+title: "Mixed models workshop"
+author: "Max Joseph"
+date: "01/14/2015"
+output: beamer_presentation
+---
 
-Mixed models
-========================================================
-author: Max Joseph
-date: Jan 14, 2014
-font-family: 'Helvetica', serif
-transition: fade
-transition-speed: fast
-
-========================================================
-class: small-code
-
-### Preface
-
-Getting files:
+## Getting files
 
 [github.com/mbjoseph/hierarchical_models](github.com/mbjoseph/hierarchical_models)
 
@@ -30,9 +18,8 @@ or
 git clone git@github.com/mbjoseph/hierarchical_models
 ```
 
-========================================================
 
-### Overview
+## Overview
 
 1. Why bother?
 
@@ -42,37 +29,30 @@ git clone git@github.com/mbjoseph/hierarchical_models
 
 4. Other resources
 
-========================================================
 
-### Why bother?
+## Why bother?
 
-![](freq.png)
+![](/home/max/Documents/presentations/hierarchical_models/ebio-brownbag/freq.png)
 
-========================================================
-
-### Why bother? 
+## Why bother? 
 
 - increasing use
 - broader scope of inference
 
-========================================================
-
-### Why bother? 
+## Why bother? 
 
 - increasing use
 - broader scope of inference
 - *improved estimates*
 
-========================================================
-
-### Scenario
+## Scenario
 
 Estimate group means $\alpha_j$ with data $y_{ij}$ from $J$ groups
 
 Tragically unequal sample sizes
 
 
-```{r echo=FALSE, fig.height=4}
+```{r echo=FALSE, message=FALSE, fig.height=4}
 library(scales)
 library(lme4)
 K <- 20 # number of groups
@@ -94,10 +74,7 @@ plot(Y~id, ylab="observation", xlab="group",
      xaxp  = c(0, K + 1, K + 1))
 ```
 
-
-===========================================================
-
-### Overly optimistic ANOVA
+## Overly optimistic ANOVA
 
 Choose between two models
 
@@ -113,10 +90,7 @@ abline(mod1, col=alpha("red", .6),
        lty=3, lwd=3)
 ```
 
-
-===========================================================
-
-### Overly optimistic ANOVA
+## Overly optimistic ANOVA
 
 Choose between two models
 
@@ -135,18 +109,13 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
        pch=19, cex=2)
 ```
 
-==========================================================
-class: small-code
-
-### Overly optimistic ANOVA
+## Overly optimistic ANOVA
 
 ```{r echo=TRUE}
 anova(mod1, mod2)
 ```
 
-==========================================================
-
-What's the deal with small sample sizes $n_j$?
+## What's the deal with small sample sizes $n_j$?
 
 ```{r, plot=TRUE, fig.height=4, echo=FALSE}
 plot(n_j, alpha_est1, 
@@ -154,10 +123,7 @@ plot(n_j, alpha_est1,
      ylab="Estimated group mean")
 ```
 
-
-==========================================================
-
-### Overfitting much?
+## Overfitting much?
 
 High parameter to data ratio for small $n_j$
 
@@ -172,8 +138,7 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
        pch=19, cex=2)
 ```
 
-
-==========================================================
+## What else?
 
 Is there an option better than $\bar y_{j.}$?
 
@@ -190,9 +155,7 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
        pch=19, cex=2)
 ```
 
-==========================================================
-
-### Conceptualizing a better estimate
+## Conceptualizing a better estimate
 
 Which estimates do we trust least?
 
@@ -209,9 +172,7 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
        pch=19, cex=2)
 ```
 
-==========================================================
-
-### A better estimate
+## A better estimate
 
 Mixture of sample and grand mean:
 
@@ -219,10 +180,7 @@ $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
 $$ 0 < \lambda < 1$$
 
-
-==========================================================
-
-### A better estimate
+##  A better estimate
 
 Mixture of sample and grand mean:
 
@@ -234,10 +192,7 @@ Compromise b/t:
 
 total pooling ($H_0: \lambda=0$) & no pooling ($H_A: \lambda = 1$)
 
-
-===================================================
-
-### Hierarchical models
+## Hierarchical models
 
 Random effects impose shrinkage!
 
@@ -245,10 +200,7 @@ $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 
 $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
-
-===================================================
-
-### Hierarchical models
+## Hierarchical models
 
 $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 
@@ -260,9 +212,7 @@ Amt shrinkage:
 
 $$\dfrac{\sigma_\alpha}{\sigma_\alpha + \sigma_y}$$
 
-=========================================================
-
-### Connection to ANOVA
+## Connection to ANOVA
 
 $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 
@@ -275,8 +225,7 @@ Compromise b/t
 
 - No pooling: $\sigma_\alpha = \infty$
 
-Synonyms
-================================================
+## Synonyms
 
 - "partial pooling" 
 - "semi-pooling"
@@ -285,13 +234,11 @@ Synonyms
 - "borrowing information"
 - "borrowing strength (of information)"
 
-=========================================================
+## Demo 
 
-Demo: [shrinkage.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/shrinkage.R)
+[shrinkage.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/shrinkage.R)
 
-========================================================
-
-### Recap
+## Recap
 
 Random effects impose partial pooling
 
@@ -303,9 +250,7 @@ $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
 *see [nba_freethrows.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/nba/nba_freethrows.R) for a real-world example
 
-========================================================
-
-### Aside
+## Aside
 
 Scope of inference:
 
@@ -317,35 +262,29 @@ Unobserved sites or groups $j \in {J+1, ...}$
 
 see [prediction.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/prediction.R) for more
 
-========================================================
-
-### Mixed effects
+## Mixed effects
 
 Combination of fixed *and* random effects
 
 e.g. let's say we study Alot blood parasites
 
-![](ALOT.png)
+![](/home/max/Documents/presentations/hierarchical_models/ebio-brownbag/ALOT.png)
 
 *[source](http://hyperboleandahalf.blogspot.com/2010/04/alot-is-better-than-you-at-everything.html)
 
-====================================================================
-
-###  Questions & sampling scenario
+## Questions & sampling scenario
 
 Do large-bodied Alots have more blood parasites?
 
 Random sample of $n_j$ individuals at each of $J$ sites.
 
-![](alot_of_alots.png)
+![](/home/max/Documents/presentations/hierarchical_models/ebio-brownbag/alot_of_alots.png)
 
-====================================================================
+## Demo
 
 [Alot example](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/alot/alot_analysis.R)
 
-====================================================================
-
-### Other resources
+## Other resources
 
 Mixed Effects Models and Extensions in Ecology with R (2009). Zuur, Ieno, Walker, Saveliev and Smith. Springer.
 
