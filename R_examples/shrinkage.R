@@ -1,7 +1,6 @@
 # fun facts about hierarchical models
 # max joseph december 2014
 # simple random intercept model
-rm(list=ls())
 library(scales)
 library(lme4)
 library(ggplot2)
@@ -10,29 +9,33 @@ op <- par(no.readonly = TRUE)
 # ----------------------- #
 # demonstrating shrinkage #
 # ------------------------#
-# we have the following model
+# we have the following random intercept model
 # Y[i, j] ~ Normal(alpha[j], sigma_y)
 # alpha[j] ~ Normal(mu_alpha, sigma_alpha)
 # with wildly varying per-group sample sizes
+
+# set parameters for simulation
 K <- 20 # number of groups
 mu_alpha <- 0 # population mean
 sigma_alpha <- 1 # among group sd
 sigma_Y <- 2 # residual sd
-e_nmin <- .001 # exp(minimum group sample size)
+e_nmin <- .01 # exp(minimum group sample size)
 e_nmax <- 3.5 # exp(maximum group sample size)
 n_j <- floor(exp(seq(e_nmin, e_nmax, length.out=K))) 
-# view distribution of sample sizes
-hist(n_j, right=FALSE, breaks=1:max(n_j))
 id <- rep(1:K, times=n_j)
 N <- length(id)
+
+# view distribution of sample sizes
+hist(n_j, right=FALSE, breaks=1:max(n_j))
 
 # simulate vals
 alpha_j <- rnorm(K, mu_alpha, sigma_alpha)
 Y <- rnorm(N, alpha_j[id], sigma_Y)
 
-## Complete pooling / grand mean model
+## Fit a complete pooling / grand mean model
 mod1 <- lm(Y ~ 1)
 
+# view results
 plot(Y~id, ylab="observation", xlab="group")
 points(alpha_j, col=alpha("blue", .5), cex=2, pch=19)
 abline(mod1, col=alpha("red", .6), 
@@ -50,10 +53,10 @@ legend("topleft",
 
 # total mean dominated by groups with high n
 # true group means shown as blue dots
+# total pooling ==> underfitting
 
 
-
-## No pooling / independent means
+## Fit a no pooling / independent means model
 mod2 <- lm(Y ~ 1 + factor(id))
 alpha_est1 <- coef(mod2)
 alpha_est1[-1] <- alpha_est1[1] + alpha_est1[-1]
@@ -77,7 +80,8 @@ legend("topleft",
 
 
 
-## Partial pooling/hierarchical model
+## Fit partial pooling/hierarchical model
+# i.e. random intercept model
 fid <- factor(id)
 mod3 <- lmer(Y ~ 1 + (1|fid))
 
@@ -122,7 +126,7 @@ plot(y=c(alpha_est2, alpha_est1), x=rep(0:1, each=K),
      xlab="",
      ylim=range(c(alpha_est1)), 
      xlim=c(-.1, 1.1))
-title(expression(paste("Shrinkage of ", bar(alpha[k]))))
+title(expression(paste("Shrinkage of ", hat(alpha[k]))))
 axis(3, at=c(0, 1), labels=c("Random effects", "Fixed effects"), padj=1)
 segments(y0=alpha_est2, x0=rep(0, K), y1=alpha_est1, x1=rep(1, K), 
          col=color_scheme(n_j))
@@ -207,6 +211,8 @@ plot(n_j, 1-lambda,
                             sep="")
        )
 )
+text(x=max(n_j)/2, y=1, labels="Complete shrinkage")
+text(x=max(n_j)/2, y=0, labels="No shrinkage")
 
 # explore shrinkage for various ratios of sigma_a / (sigma_a + sigma_y)
 sigma_a_vec <- seq(.01, .99, length.out=5)
@@ -245,8 +251,6 @@ legend(1.05*max(n_j), 1, lty=1,
        legend=leg, 
        bty="n", 
        y.intersp=2)
-text(x=max(n_j)/2, y=1, labels="Complete shrinkage")
-text(x=max(n_j)/2, y=0, labels="No shrinkage")
 par(xpd=FALSE)
 # end plot 4
 par(op)

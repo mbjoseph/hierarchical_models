@@ -36,7 +36,8 @@ N <- length(id)
 alpha_j <- rnorm(K, mu_alpha, sigma_alpha)
 Y <- rnorm(N, alpha_j[id], sigma_Y)
 
-MLmod <- lmer(Y ~ 1 + (1|factor(id)))
+idf <- factor(id)
+MLmod <- lmer(Y ~ 1 + (1|idf))
 
 # for bayesian hierarchical models (especially with low K)
 # hierarchical variance term posterior distributions

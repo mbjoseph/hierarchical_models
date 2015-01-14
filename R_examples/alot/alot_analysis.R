@@ -1,11 +1,13 @@
 # Analyzing the Alot blood parasite data
 # set working directory to location of alot.csv
 setwd("R_examples/alot")
+
+# load relevant packages
 library(ggplot2)
 library(lme4)
 library(grid) # for arrow() function
 
-# simulate a dataset
+# collect (simulate) a dataset
 source("alot_sim.R")
 
 # look at structure of dataset
@@ -26,17 +28,17 @@ ggplot(d, aes(x=site, y=log_parasites)) +
 
 # So, it looks like we have among-site variation
 # and possibly a relationship w/ size
-# let's build a mixed model with a random effect of site and a fixed effect of body size
+# let's build a mixed model with: 
+# random effect of site and a fixed effect of body size
 m1 <- lmer(log_parasites ~ body_size + (1|site), 
            data=d)
 
-# gather up intercepts
+# gather up intercepts and slopes for each site
 intercepts <- fixef(m1)[1] + unlist(ranef(m1))
 slopes <- rep(fixef(m1)[2], length(unique(d$site)))
-
-# let's plot those results
 params <- data.frame(intercepts, slopes, site=unique(d$site))
 
+# visualize fit
 ggplot(d, aes(x=body_size, y=log_parasites)) + 
   geom_point(pch=1) + 
   theme_bw() + 
@@ -83,7 +85,7 @@ params2 <- data.frame(intercepts = intercepts2,
                       slopes = slopes2, 
                       site=unique(d$site))
 
-# does it fit the observed data better?
+# does model fit the observed data better?
 ggplot(d, aes(y=log_parasites, x=body_size)) + 
   geom_point(pch=1) + 
   facet_wrap(~site) + 
@@ -108,6 +110,8 @@ AIC(m1, m2)
 
 # looks like the random slope, random intercept model prevails!
 # which makes sense, as this is the true model
+
+# visualize fit slightly differently
 p1 <- ggplot(d, aes(x=body_size, y=log_parasites)) + 
   geom_abline(intercept = fixef(m2)[1], 
               slope = fixef(m2)[2], col="red", 
@@ -125,7 +129,8 @@ p1 <- ggplot(d, aes(x=body_size, y=log_parasites)) +
 p1
 
 
-# Let's visualize shrinkage in two dimensions
+# Let's 1) compare the fit of the unshrunk vs. shrunk estimates
+# then  2) visualize shrinkage in two dimensions
 # first, obtain unshrunk estimates
 # we want a model that estimates intercepts and slopes for each site independently
 # i.e. ANCOVA
@@ -139,6 +144,7 @@ m3_slopes <- coef(m3)[grepl("body_size", names(coef(m3)))]
 m3_slopes <- m3_slopes +  m3_slopes[1]
 m3_slopes[1] <- m3_slopes[1] * .5
 
+# bundle those parameters into a data.frame
 params3 <- data.frame(intercepts = m3_intercepts, 
                       slopes = m3_slopes, 
                       site=unique(d$site))
@@ -178,11 +184,11 @@ ggplot(d, aes(y=log_parasites, x=body_size)) +
   
 
 
-
-# generate a 95% confidence ellipse for the joint MVNormal distribution
-# of intercepts & slopes
+# Visualize shrinkage in two dimensions...
+# generate a probability density surface of the joint MVNormal distribution
+# of intercepts & slopes estimated in our model
 library(mvtnorm)
-lo <- 200
+lo <- 200 # length.out of x and y grid
 xvals <- seq(from = min(shrink2d$intF), 
              to = max(shrink2d$intF), 
              length.out = lo)
@@ -201,8 +207,8 @@ for (i in 1:lo) {
   x = xvals
   y = yvals[i]
   z[,i] = dmvnorm(cbind(x,y), 
-                  mean = fixef(m2), 
-                  sigma = VarCorr(m2)$site)
+                  mean = fixef(m2), # bivariate mean = fixed effects vector
+                  sigma = VarCorr(m2)$site) # estimated covariance matrix
 }
 
 # great, but ggplot2 works best with data.frames, so we need to convert
@@ -210,7 +216,7 @@ for (i in 1:lo) {
 require(reshape2)
 mv_ranef <- melt(z)
 
-# now rename columns
+# rename columns
 names(mv_ranef) <- c("x", "y", "z")
 
 # by default, melt() returned columns of indices rather than original values

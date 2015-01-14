@@ -13,6 +13,24 @@ transition: fade
 transition-speed: fast
 
 ========================================================
+class: small-code
+
+### Preface
+
+Getting files:
+
+[github.com/mbjoseph/hierarchical_models](github.com/mbjoseph/hierarchical_models)
+
+Download as zipped folder 
+
+or
+
+
+```
+git clone git@github.com/mbjoseph/hierarchical_models
+```
+
+========================================================
 
 ### Overview
 
@@ -28,15 +46,7 @@ transition-speed: fast
 
 ### Why bother?
 
-```{r echo=FALSE, fig.height=4}
-setwd("~/Documents/presentations/hierarchical_models")
-d <- read.csv("ebio-brownbag/analyze.csv")
-d <- subset(d, year != 2015)
-plot(d$year, d$records, 
-     xlab="Year", 
-     ylab="Number of results", 
-     main="ISI WoS topic frequency of mixed model* ecolog*")
-```
+![](freq.png)
 
 ========================================================
 
@@ -44,8 +54,6 @@ plot(d$year, d$records,
 
 - increasing use
 - broader scope of inference
-
-
 
 ========================================================
 
@@ -56,6 +64,8 @@ plot(d$year, d$records,
 - *improved estimates*
 
 ========================================================
+
+### Scenario
 
 Estimate group means $\alpha_j$ with data $y_{ij}$ from $J$ groups
 
@@ -87,7 +97,7 @@ plot(Y~id, ylab="observation", xlab="group",
 
 ===========================================================
 
-### Optimist's ANOVA perspective
+### Overly optimistic ANOVA
 
 Choose between two models
 
@@ -106,7 +116,7 @@ abline(mod1, col=alpha("red", .6),
 
 ===========================================================
 
-### Optimist's ANOVA perspective
+### Overly Optimistic ANOVA
 
 Choose between two models
 
@@ -128,7 +138,7 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
 ==========================================================
 class: small-code
 
-### Overly optimistic analysis
+### Overly optimistic ANOVA
 
 ```{r echo=TRUE}
 anova(mod1, mod2)
@@ -180,14 +190,13 @@ points(x=1:K, alpha_est1, col=alpha("green", .5),
        pch=19, cex=2)
 ```
 
-
 ==========================================================
 
 ### Conceptualizing a better estimate
 
-Which of these estimates do we trust least?
+Which estimates do we trust least?
 
-What information can we use to improve the estimate?
+What information can improve those estimates?
 
 ```{r echo=FALSE, fig.height=4}
 ## No pooling / independent means
@@ -210,6 +219,7 @@ $$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
 
 $$ 0 < \lambda < 1$$
 
+
 ==========================================================
 
 ### A better estimate
@@ -222,20 +232,8 @@ $$ 0 < \lambda < 1$$
 
 Compromise b/t: 
 
-no pooling ($H_A, \lambda = 1$) & total pooling ($H_0, \lambda=0$)
+total pooling ($H_0: \lambda=0$) & no pooling ($H_A: \lambda = 1$)
 
-
-========================================================
-
-### A better estimate
-
-Mixture of sample and grand mean:
-
-$$ \hat \alpha_j = \lambda_j \bar y_{j.} + (1 - \lambda_j) \bar y_{..}$$
-
-Compromise between no pooling ($H_A, \lambda = 1$) and total pooling ($H_0 \lambda=0$)
-
-$\lambda$ controls degree of shrinkage
 
 ===================================================
 
@@ -247,7 +245,6 @@ $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 
 $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
-![](http://pngimg.com/upload/star_PNG1597.png)
 
 ===================================================
 
@@ -273,7 +270,7 @@ $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
 $$0 < \sigma_\alpha < \infty$$
 
-Compromise between 
+Compromise b/t
 - Total pooling: $\sigma_\alpha = 0$
 
 - No pooling: $\sigma_\alpha = \infty$
@@ -296,12 +293,29 @@ Demo: [shrinkage.R](https://github.com/mbjoseph/hierarchical_models/blob/master/
 
 ### Recap
 
-Random effects impose structure on parameters
+Random effects impose partial pooling
 
 $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 
 $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
+
+
+*see [nba_freethrows.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/nba/nba_freethrows.R) for a real-world example
+
+========================================================
+
+### Aside
+
+Scope of inference:
+
+Observed sites or groups $j \in {1, ..., J}$
+
+*and*
+
+Unobserved sites or groups $j \in {J+1, ...}$
+
+see [prediction.R](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/prediction.R) for more
 
 ========================================================
 
@@ -309,11 +323,11 @@ $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
 Combination of fixed *and* random effects
 
-e.g. let's say I'm studying Alot blood parasites
+e.g. let's say we study Alot blood parasites
 
 ![](ALOT.png)
 
-* courtesy of [Hyperbole and a Half](http://hyperboleandahalf.blogspot.com/)
+*[source](http://hyperboleandahalf.blogspot.com/2010/04/alot-is-better-than-you-at-everything.html)
 
 ====================================================================
 
@@ -327,4 +341,6 @@ Random sample of $n_j$ individuals at each of $J$ sites.
 
 ====================================================================
 
-(Alot example)[]
+[Alot example](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/alot/alot_analysis.R)
+
+====================================================================
