@@ -135,7 +135,8 @@ p1
 # first, obtain unshrunk estimates
 # we want a model that estimates intercepts and slopes for each site independently
 # i.e. ANCOVA
-m3 <- lm(log_parasites ~ body_size * site, data=d)
+m3 <- lm(log_parasites ~ body_size * site, 
+         data=d)
 
 # shennanigans to create a data frame of site-specific slopes and intercepts
 m3_intercepts <- coef(m3)[!grepl("body_size", names(coef(m3)))]

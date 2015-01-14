@@ -207,6 +207,7 @@ $$y_{ij} \sim Normal(\alpha_j, \sigma_y)$$
 $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 
 Amt shrinkage:
+
 - information in group j (e.g. $n_j$)
 - variance attributable to groups
 
@@ -221,8 +222,8 @@ $$ \alpha_j \sim Normal(\mu_{\alpha}, \sigma_{\alpha})$$
 $$0 < \sigma_\alpha < \infty$$
 
 Compromise b/t
-- Total pooling: $\sigma_\alpha = 0$
 
+- Total pooling: $\sigma_\alpha = 0$
 - No pooling: $\sigma_\alpha = \infty$
 
 ## Synonyms
