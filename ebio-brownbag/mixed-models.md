@@ -115,9 +115,9 @@ Analysis of Variance Table
 
 Model 1: Y ~ 1
 Model 2: Y ~ 1 + factor(id)
-  Res.Df    RSS Df Sum of Sq     F    Pr(>F)    
-1    186 909.63                                 
-2    167 560.73 19     348.9 5.469 2.841e-10 ***
+  Res.Df    RSS Df Sum of Sq      F  Pr(>F)  
+1    186 989.73                              
+2    167 835.36 19    154.37 1.6242 0.05541 .
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
@@ -291,3 +291,12 @@ Random sample of $n_j$ individuals at each of $J$ sites.
 [Alot example](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/alot/alot_analysis.R)
 
 ====================================================================
+
+### Other resources
+
+Mixed Effects Models and Extensions in Ecology with R (2009). Zuur, Ieno, Walker, Saveliev and Smith. Springer.
+
+lme4: Mixed-effects modeling with R (2010). Bates, Douglas. Springer.
+
+Generalized linear mixed models: a practical guide for ecology and evolution (2009). Benjamin M. Bolker, et al. TREE.
+

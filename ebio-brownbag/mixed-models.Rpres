@@ -344,3 +344,12 @@ Random sample of $n_j$ individuals at each of $J$ sites.
 [Alot example](https://github.com/mbjoseph/hierarchical_models/blob/master/R_examples/alot/alot_analysis.R)
 
 ====================================================================
+
+### Other resources
+
+Mixed Effects Models and Extensions in Ecology with R (2009). Zuur, Ieno, Walker, Saveliev and Smith. Springer.
+
+lme4: Mixed-effects modeling with R (2010). Bates, Douglas. Springer.
+
+Generalized linear mixed models: a practical guide for ecology and evolution (2009). Benjamin M. Bolker, et al. TREE.
+
